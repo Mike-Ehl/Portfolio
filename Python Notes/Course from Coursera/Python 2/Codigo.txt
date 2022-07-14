@@ -1,0 +1,44 @@
+#!/usr/bin/env python3
+#REPORTE DE ERRORES
+import csv
+import os
+import re
+import operator
+
+with open('syslog.log') as file:
+	dict={}
+	errores=[]
+	for i in file:
+		if 'ERROR' in i:
+			match_error=re.search(r'ERROR (.*) \(',i)
+			lista.append(match_error.groups())
+			tipos_de_errores=list(set(errores))
+	for error in tipos_de_errores:
+		dict[error]=errores.count(error)
+	srtd=sorted(dict.items(), key=operator.itemgetter(1), reverse = True)
+	csv_list=[['Error','Count']]
+	for tupla in srtd:
+		list_temp=[tupla[0][0],tupla[1]]
+		csv_list.append(list_temp)
+	with open('error_message.csv','w') as error_csv:
+		writer_error=csv.writer(error_csv)
+		writer_error.writerows(csv_list)
+#________________________________________________________________________________________________________________________________________
+
+#REPORTE POR USUARIOS
+
+with open ('syslog.log') as logs:
+	csv_file=[['Usuario','INFO','ERROR']]
+	usr_inf=[]
+	usr_err=[]
+	for log in logs:
+		if ': INFO' in log:
+			match_users_info=re.search(r'\((.*)\)', log)
+			usr_inf.append(match_users_info.groups())
+		else:
+			match_users_error=re.search(r'\((.*)\)', log)
+			usr_err.append(match_users_error.groups())
+	users=list(set(usr_inf+usr_err))
+
+	for usuario in users:
+		csv_file.append(list([usuario,usr_info.count(usuario),usr_error.count(usuario)]))
